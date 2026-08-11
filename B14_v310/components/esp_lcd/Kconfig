@@ -1,0 +1,7 @@
+menu "ESP-Driver:LCD Controller Configurations (SPI-only Nissan B14 override)"
+    config LCD_ENABLE_DEBUG_LOG
+        bool "Enable debug log"
+        default n
+        help
+            Enable debug logging for the ESP LCD SPI driver used by this project.
+endmenu

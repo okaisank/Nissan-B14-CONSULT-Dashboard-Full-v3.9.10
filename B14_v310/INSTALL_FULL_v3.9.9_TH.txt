@@ -1,0 +1,17 @@
+Nissan B14 v3.9.10 - FULL INSTALL
+================================
+Recommended folder: C:\B14_v310
+
+1) Clean:
+   powershell -ExecutionPolicy Bypass -File .\BUILD_CLEAN.ps1
+
+หรือทำเอง:
+   Remove-Item C:\pio\b14v310 -Recurse -Force -ErrorAction SilentlyContinue
+   pio run -e b14v310 -j 1
+
+2) ต้องจบ [SUCCESS]
+3) ตรวจ COM: pio device list
+4) Upload: pio run -e b14v310 -t upload
+5) Monitor: pio device monitor -p COM4 -b 115200
+6) กด EN/RESET 1 ครั้ง
+7) ตรวจ JOEVOHAN@261, STATUS, DISPLAYSTATUS, UNITS, FLASHSTATUS, NVSSTATUS

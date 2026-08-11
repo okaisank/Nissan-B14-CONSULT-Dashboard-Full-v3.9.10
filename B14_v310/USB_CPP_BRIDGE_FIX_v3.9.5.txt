@@ -1,0 +1,18 @@
+ROOT CAUSE v3.9.5
+=================
+FTDI component 2.0.0 is C++ API only. The C API header usb/vcp_ftdi.h was added later (2.1.0).
+Therefore v3.9.3 failed in main.c at #include "usb/vcp_ftdi.h".
+
+v3.9.5 uses the official Espressif VCP pattern:
+  VCP::register_driver<FT23x>();
+  VCP::open(&dev_config);
+inside src/ftdi_bridge.cpp.
+main.c sees only a small C wrapper (src/ftdi_bridge.h).
+
+Pinned components:
+  usb_host_cdc_acm 2.0.0
+  usb_host_ftdi_vcp 2.0.0
+  usb_host_vcp 1.0.0~5
+  esp_lcd_ili9488 1.0.9
+
+Important: C++ exceptions are enabled in sdkconfig.defaults because the FTDI C++ driver requires them.

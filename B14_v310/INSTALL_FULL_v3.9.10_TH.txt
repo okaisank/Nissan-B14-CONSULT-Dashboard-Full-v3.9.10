@@ -1,0 +1,23 @@
+Nissan B14 CONSULT Dashboard Full v3.9.10 - CONFIG-GUARD FIX
+==============================================================
+
+ROOT CAUSE FIXED
+----------------
+The old cleanup command `Remove-Item sdkconfig.*` also matched and deleted
+`sdkconfig.defaults`. That caused CMake to fail with:
+SDKCONFIG_DEFAULTS 'C:/B14_v399/sdkconfig.defaults' does not exist.
+
+v3.9.10 stores the source defaults at:
+  config/b14_sdkconfig.defaults
+The cleanup script deletes only generated sdkconfig files by exact name.
+
+QUICK BUILD
+-----------
+cd C:\B14_v310
+powershell -ExecutionPolicy Bypass -File .\VERIFY_CONFIG.ps1
+powershell -ExecutionPolicy Bypass -File .\BUILD_CLEAN.ps1
+
+After [SUCCESS]:
+pio device list
+pio run -e b14v310 -t upload
+pio device monitor -p COM4 -b 115200

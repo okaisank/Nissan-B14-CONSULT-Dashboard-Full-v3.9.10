@@ -1,0 +1,39 @@
+NISSAN B14 CONSULT DASHBOARD FULL v3.9.7
+POWER-ON DISPLAY FIX / WHITE-SCREEN MITIGATION
+============================================================
+
+อาการที่แก้:
+- ถ้าจ่ายไฟ TFT และ ESP32 พร้อมกัน จออาจขาวและไม่เข้า Dashboard
+- ถ้าจ่ายไฟ TFT ก่อนแล้วค่อยเปิด ESP32 จอทำงานปกติ
+
+แนวทางใน v3.9.7:
+1) GPIO18 Backlight OFF ทันทีตอนเริ่ม dashboard_init()
+2) GPIO10 TFT_CS = HIGH ป้องกันคำสั่งหลอกระหว่าง Boot
+3) GPIO8 TFT_RST = LOW ค้าง 350 ms ให้ไฟ TFT/ESP32 นิ่ง
+4) ปล่อย GPIO8 HIGH แล้วรอ 180 ms
+5) Initialize SPI2 + ILI9488
+6) esp_lcd_panel_reset() -> รอ 180 ms
+7) esp_lcd_panel_init() -> รอ 120 ms
+8) Retry สูงสุด 3 ครั้งถ้า panel init ไม่ผ่าน
+9) เปิด Display แต่ Backlight ยัง OFF
+10) Clear GRAM เป็น BLACK
+11) วาด JOEVOHAN@261 Splash ให้เสร็จ
+12) เปิด GPIO18 Backlight -> ผู้ใช้เห็น Splash เป็นเฟรมแรก ไม่เห็นจอขาว
+
+Pin ที่เกี่ยวข้อง:
+TFT_RST = GPIO8
+TFT_DC  = GPIO9
+TFT_CS  = GPIO10
+MOSI    = GPIO11
+SCLK    = GPIO12
+MISO    = GPIO13
+TFT_BL  = GPIO18 (active HIGH)
+
+Serial command ใหม่:
+DISPLAYSTATUS
+
+ข้อสำคัญ:
+- ถ้าขา BL ของจอไม่ได้ต่อ GPIO18 แต่ผูกกับไฟเลี้ยงโดยตรง Firmware จะควบคุม Backlight ไม่ได้
+  แต่ reset-delay + CS-high + retry ยังคงช่วยเรื่อง initialization
+- หาก BL ทำงานกลับด้าน ให้เปลี่ยน TFT_BL_ACTIVE_LEVEL จาก 1 เป็น 0 ใน src/dashboard.c
+- ระบบนี้ยังเป็น INTERNAL FLASH / NO SD / NO RTC และคง Engineering Units v3.9.7 ครบ

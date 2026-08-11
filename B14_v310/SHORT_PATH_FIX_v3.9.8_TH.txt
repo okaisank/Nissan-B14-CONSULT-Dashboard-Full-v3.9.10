@@ -1,0 +1,28 @@
+Nissan B14 v3.9.10 SHORT-PATH-FIX
+================================
+
+Root cause fixed:
+PlatformIO/CMake File API generated a target JSON path longer than the classic
+Windows MAX_PATH (260 characters). The previous long project folder + long
+PlatformIO environment + long CMake project target could produce paths around
+or above that limit, causing:
+
+Error: Couldn't find target config target-....json
+
+This release shortens all build-critical paths:
+- Recommended project folder: C:\B14_v310
+- PlatformIO environment: b14v310
+- CMake project target: b14v310
+- PlatformIO workspace: C:\pio\b14v310
+
+The external workspace is intentionally version-specific and is wiped by
+BUILD_CLEAN.ps1 before each clean build.
+
+This does NOT change vehicle features:
+- JOEVOHAN@261 splash
+- ILI9488 SPI display power-on reset fix
+- Engineering units / MAF EST g/s
+- CONSULT/FTDI bridge
+- Internal Flash + NVS
+- No SD
+- No RTC

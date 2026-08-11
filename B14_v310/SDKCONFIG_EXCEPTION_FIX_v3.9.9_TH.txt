@@ -1,0 +1,24 @@
+Nissan B14 v3.9.10 SDKCONFIG / C++ EXCEPTION FIX
+================================================
+
+ปัญหาที่แก้:
+1) ftdi_bridge.cpp ขึ้น "exception handling disabled, use '-fexceptions' to enable"
+2) Build เตือน "Expected 16MB, found 2MB"
+
+สาเหตุหลัก:
+PlatformIO/ESP-IDF ใช้ generated sdkconfig ต่อ environment และไฟล์ generated เดิมสามารถ
+คงค่าที่ไม่ตรงกับ sdkconfig.defaults ได้ เช่น C++ exceptions = OFF และ flash size = 2MB.
+
+v3.9.10 บังคับ:
+- PlatformIO generated config = sdkconfig.b14v310 (default per-environment behavior)
+- SDKCONFIG_DEFAULTS = sdkconfig.defaults
+- CONFIG_COMPILER_CXX_EXCEPTIONS=y
+- CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y
+- การ Clean จะลบ sdkconfig.* และ C:/pio/b14v310 ทำให้ไม่มี stale sdkconfig เหลือ
+
+คำสั่งตรวจหลัง CMake configure:
+  Select-String -Path ".\sdkconfig.b14v310" -Pattern "CONFIG_COMPILER_CXX_EXCEPTIONS|CONFIG_ESPTOOLPY_FLASHSIZE"
+
+ค่าที่ต้องเห็น:
+  CONFIG_COMPILER_CXX_EXCEPTIONS=y
+  CONFIG_ESPTOOLPY_FLASHSIZE_16MB=y

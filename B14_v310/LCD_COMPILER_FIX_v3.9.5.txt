@@ -1,0 +1,17 @@
+NISSAN B14 v3.9.5 - SPI LCD ONLY COMPILER FIX
+
+Observed failure:
+  during RTL pass: ira
+  esp_lcd_panel_rgb.c / rgb_panel_draw_bitmap
+  internal compiler error: Segmentation fault
+
+Root cause/workaround used here:
+- The display in this project is ILI9488 SPI, not an RGB parallel panel.
+- ESP32-S3 capability causes stock ESP-IDF esp_lcd to compile the RGB source anyway.
+- A project-local component named components/esp_lcd overrides the built-in ESP-IDF
+  component and compiles only the SPI LCD sources required by this application.
+- rgb/esp_lcd_panel_rgb.c is therefore NOT compiled.
+- The global PlatformIO framework installation is NOT edited.
+
+Build reliability:
+  Use BUILD_CLEAN.ps1 or: pio run -j 1

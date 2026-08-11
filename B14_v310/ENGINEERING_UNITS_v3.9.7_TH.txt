@@ -1,0 +1,54 @@
+NISSAN B14 v3.9.7 - ENGINEERING UNITS FULL
+
+PURPOSE
+- Keep Nissan CONSULT raw sensor values for traceability.
+- Add driver/engineering-friendly values without pretending estimated values are direct ECU channels.
+
+LIVE CONVERSIONS
+1) MAF
+   ECU raw: volts from CONSULT.
+   Display: MAF EST in g/s plus RAW voltage.
+   Formula: displacement_L * (RPM / 120) * VE * air_density_g_per_L.
+   Constants: displacement 1.60 L, air density 1.18 g/L.
+   VE model is selected from RPM + TPS bands.
+   This is an estimate only.
+
+2) TPS
+   Raw: volts.
+   Display: estimated 0-100 % plus RAW voltage.
+   Calibration points: CLOSED 0.56 V, WOT 4.00 V.
+   Closed-throttle ECU bit forces near-zero values to 0%.
+
+3) O2 narrowband
+   Raw voltage retained.
+   <=0.35 V = LEAN
+   >=0.55 V = RICH
+   between thresholds = MID / switching zone.
+   It is NOT displayed as a wideband AFR.
+
+4) Ignition timing
+   Value remains degrees from CONSULT decoder.
+   Positive = BTDC; negative = ATDC.
+   Dashboard legend: +BTDC/-ATDC.
+
+5) A/F Alpha
+   Raw Alpha % retained.
+   Engineering display: Fuel Correction delta = Alpha - 100%.
+   Example: 97% -> -3%, 105% -> +5%.
+
+UNCHANGED STANDARD UNITS
+- RPM: rpm
+- Speed: km/h
+- Injector pulse: ms
+- Injector duty: %
+- Coolant: C
+- Battery: V
+- AAC: %
+- Fuel rate: L/h
+- Economy: km/L
+- Distance: km
+- Fuel used: L
+- Cost: Baht
+
+IMPORTANT
+MAF EST and TPS % use initial engineering calibration/model values. Raw V is always shown so the model can be calibrated against the actual car later.

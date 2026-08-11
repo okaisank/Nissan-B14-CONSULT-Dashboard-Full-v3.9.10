@@ -1,0 +1,11 @@
+# Nissan B14 v3.9.10 - protected ESP-IDF defaults
+# Stored under config/ so cleanup commands cannot accidentally delete it with sdkconfig.*
+
+# Required by Espressif C++ USB Host VCP service
+CONFIG_COMPILER_CXX_EXCEPTIONS=y
+
+# Project is built conservatively for the standard ESP32-S3 DevKitC N8 layout.
+# The partition table uses less than 8 MB. A physically larger flash chip is still usable.
+CONFIG_ESPTOOLPY_FLASHSIZE_8MB=y
+
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y

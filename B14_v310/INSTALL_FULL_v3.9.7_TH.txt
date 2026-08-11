@@ -1,0 +1,96 @@
+NISSAN B14 CONSULT DASHBOARD FULL v3.9.7
+POWER-ON DISPLAY FIX + ENGINEERING UNITS + INTERNAL FLASH
+NO SD / NO RTC
+=========================================================
+
+PROJECT FOLDER:
+Nissan-B14-CONSULT-Dashboard-Full-v3.9.7-POWER-ON-DISPLAY-FIX-ENGINEERING-UNITS-INTERNAL-FLASH-NO-SD-NO-RTC
+
+1) Download ZIP to Downloads.
+2) Stop Serial Monitor with Ctrl+C.
+3) PowerShell - find ZIP:
+   Get-ChildItem "$env:USERPROFILE\Downloads" -Filter "Nissan-B14-CONSULT-Dashboard-Full-v3.9.7*.zip"
+
+4) Remove old extracted v3.9.7 folder if it exists:
+   Remove-Item "C:\Nissan-B14-CONSULT-Dashboard-Full-v3.9.7-POWER-ON-DISPLAY-FIX-ENGINEERING-UNITS-INTERNAL-FLASH-NO-SD-NO-RTC" -Recurse -Force -ErrorAction SilentlyContinue
+
+5) Find latest ZIP:
+   $zip = Get-ChildItem "$env:USERPROFILE\Downloads" -Filter "Nissan-B14-CONSULT-Dashboard-Full-v3.9.7*.zip" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
+   $zip.FullName
+
+6) Extract:
+   Expand-Archive $zip.FullName -DestinationPath "C:\" -Force
+
+7) Enter project:
+   cd "C:\Nissan-B14-CONSULT-Dashboard-Full-v3.9.7-POWER-ON-DISPLAY-FIX-ENGINEERING-UNITS-INTERNAL-FLASH-NO-SD-NO-RTC"
+
+8) Verify files:
+   dir
+   dir .\components\esp_lcd
+   Get-Content .\src\idf_component.yml
+
+9) Check free space:
+   Get-PSDrive C
+
+10) Clean all generated build/component locks:
+   Remove-Item .pio -Recurse -Force -ErrorAction SilentlyContinue
+   Remove-Item managed_components -Recurse -Force -ErrorAction SilentlyContinue
+   Remove-Item dependencies.lock -Force -ErrorAction SilentlyContinue
+   Remove-Item sdkconfig -Force -ErrorAction SilentlyContinue
+
+11) Compile single-job:
+   pio run -j 1
+
+   STOP if [FAILED].
+   Continue only if [SUCCESS].
+
+12) Detect COM port:
+   pio device list
+
+13) Upload:
+   pio run -t upload
+
+14) Serial monitor (example COM4):
+   pio device monitor -p COM4 -b 115200
+
+15) Press EN/RESET once if no boot text appears.
+
+16) Expected TFT startup:
+   - White screen should be suppressed
+   - BL remains OFF during initialization
+   - First visible frame is JOEVOHAN@261
+   - Then Dashboard
+
+17) Test Serial commands:
+   STATUS
+   DISPLAYSTATUS
+   UNITS
+   FLASHSTATUS
+   NVSSTATUS
+   DATE 2026-08-11
+   TOTALS
+   HISTORY
+   EVENTS
+   HELP
+
+Expected DISPLAYSTATUS includes:
+   TFT READY
+   Backlight GPIO18 active-high
+   Reset GPIO8
+   CS GPIO10 HIGH during boot
+   Init retry = 3
+   White-screen mitigation ENABLED
+
+18) Vehicle/CONSULT test only after TFT + Flash + NVS pass.
+
+Hardware reminder:
+TFT_RST  GPIO8
+TFT_DC   GPIO9
+TFT_CS   GPIO10
+TFT_MOSI GPIO11
+TFT_SCK  GPIO12
+TFT_MISO GPIO13
+TFT_BL   GPIO18 (active HIGH)
+IGN      GPIO17 (12V must NOT go directly to ESP32 GPIO)
+SD       NOT USED
+RTC      NOT USED
